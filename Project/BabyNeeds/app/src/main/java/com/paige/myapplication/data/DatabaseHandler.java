@@ -60,7 +60,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(Constants.TABLE_NAME, null, contentValues);
 
         db.close();
-        Log.d(TAG, "added Item: " );
+        Log.d(TAG, "added Item Color: " + contentValues.get(Constants.KEY_COLOR) );
     }
 
     //Get an Item
@@ -68,7 +68,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(
                 Constants.TABLE_NAME,
-                new String[]{Constants.KEY_ID, Constants.KEY_BABY_ITEM, Constants.KEY_QTY_NUMBER, Constants.KEY_ITEM_SIZE, Constants.KEY_DATE_NAME},
+                new String[]{Constants.KEY_ID, Constants.KEY_BABY_ITEM, Constants.KEY_COLOR, Constants.KEY_QTY_NUMBER, Constants.KEY_ITEM_SIZE, Constants.KEY_DATE_NAME},
                 Constants.KEY_ID + " = ?",
                 new String[]{String.valueOf(id)},
                 null, null, null, null);
@@ -79,6 +79,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if(cursor != null) {
             item.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Constants.KEY_ID))));
             item.setItemName(cursor.getString(cursor.getColumnIndex(Constants.KEY_BABY_ITEM)));
+            item.setItemColor(cursor.getString(cursor.getColumnIndex(Constants.KEY_COLOR)));
             item.setItemQuantity(cursor.getInt(cursor.getColumnIndex(Constants.KEY_QTY_NUMBER)));
             item.setItemSize(cursor.getInt(cursor.getColumnIndex(Constants.KEY_ITEM_SIZE)));
 
@@ -87,7 +88,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             String formattedDate = dateFormat.format(new Date(cursor.getLong(cursor.getColumnIndex(Constants.KEY_DATE_NAME))).getTime()); // Feb 23, 2020
             item.setDateItemAdded(formattedDate);
         }
-        cursor.close();
         return item;
     }
 
@@ -97,7 +97,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         List<Item> itemList = new ArrayList<>();
         Cursor cursor = db.query
                 (Constants.TABLE_NAME,
-                new String[]{Constants.KEY_ID, Constants.KEY_BABY_ITEM, Constants.KEY_QTY_NUMBER, Constants.KEY_ITEM_SIZE, Constants.KEY_DATE_NAME},
+                new String[]{Constants.KEY_ID, Constants.KEY_BABY_ITEM, Constants.KEY_COLOR, Constants.KEY_QTY_NUMBER, Constants.KEY_ITEM_SIZE, Constants.KEY_DATE_NAME},
                 null, null, null, null, Constants.KEY_DATE_NAME + " DESC", null);
 
         if(cursor.moveToFirst()){
@@ -105,6 +105,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 Item item = new Item();
                 item.setId(Integer.parseInt(cursor.getString(cursor.getColumnIndex(Constants.KEY_ID))));
                 item.setItemName(cursor.getString(cursor.getColumnIndex(Constants.KEY_BABY_ITEM)));
+                item.setItemColor(cursor.getString(cursor.getColumnIndex(Constants.KEY_COLOR)));
                 item.setItemQuantity(cursor.getInt(cursor.getColumnIndex(Constants.KEY_QTY_NUMBER)));
                 item.setItemSize(cursor.getInt(cursor.getColumnIndex(Constants.KEY_ITEM_SIZE)));
 
@@ -128,7 +129,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         contentValues.put(Constants.KEY_QTY_NUMBER, item.getItemQuantity());
         contentValues.put(Constants.KEY_ITEM_SIZE, item.getItemSize());
         contentValues.put(Constants.KEY_DATE_NAME, System.currentTimeMillis());
-
         int updated = db.update(Constants.TABLE_NAME,  contentValues,Constants.KEY_ID + " = ?", new String[]{String.valueOf(item.getId())});
         db.close();
         return updated;
@@ -149,6 +149,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         int counts = cursor.getCount();
         cursor.close();
         return counts;
+    }
+
+    public void deleteAll(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.delete(Constants.TABLE_NAME, null, null);
+        db.close();
     }
 
 }
