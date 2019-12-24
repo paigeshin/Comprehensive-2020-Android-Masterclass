@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CompleRoomPractice1</string>
+    <string name="no_todo">No list</string>
+    <string name="not_saved">Data is not saved</string>
+    <string name="new_to_do_list">new to do list</string>
+    <string name="insert">insert</string>
+</resources>
