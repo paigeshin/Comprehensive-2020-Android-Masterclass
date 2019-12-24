@@ -1,16 +1,20 @@
 package com.paige.myapplication.util;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.paige.myapplication.R;
+import com.paige.myapplication.data.DatabaseHandler;
 import com.paige.myapplication.model.Item;
 
 import java.text.MessageFormat;
@@ -20,6 +24,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     private Context context;
     private List<Item> itemList;
+
+    //AlertDialog
+    private AlertDialog.Builder builder;
+    private AlertDialog dialog;
+    private LayoutInflater inflater;
 
     public RecyclerViewAdapter(Context context, List<Item> itemList) {
         this.context = context;
@@ -77,15 +86,113 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         @Override
         public void onClick(View v) {
 
+            int position = getAdapterPosition();
+            position = getAdapterPosition();
+            Item item = itemList.get(position);
+
             switch (v.getId()){
                 case R.id.editButton:
                     //edit item
+                    editItem(item);
                     break;
                 case R.id.deleteButton:
-                    //delete item
+                    //delete ite
+                    deleteItem(item.getId());
                     break;
             }
 
         }
+
+        private void editItem(final Item newItem) {
+
+            builder = new AlertDialog.Builder(context);
+            inflater = LayoutInflater.from(context);
+            final View view = inflater.inflate(R.layout.popup, null);
+
+            Button saveButton;
+            final EditText babyItem, itemQuantity, itemColor, itemSize;
+            TextView title;
+
+            babyItem = view.findViewById(R.id.babyItem);
+            itemQuantity = view.findViewById(R.id.itemQuantity);
+            itemColor = view.findViewById(R.id.itemColor);
+            itemSize = view.findViewById(R.id.itemSize);
+            saveButton = view.findViewById(R.id.saveButton);
+            saveButton.setText(R.string.update_text);
+            title = view.findViewById(R.id.title);
+
+            title.setText(R.string.edit_item);
+            babyItem.setText(newItem.getItemName());
+            itemQuantity.setText(String.valueOf(newItem.getItemQuantity()));
+            itemColor.setText(newItem.getItemColor());
+            itemSize.setText(String.valueOf(newItem.getItemSize()));
+
+            builder.setView(view);
+            dialog = builder.create();
+            dialog.show();
+
+            saveButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //update our item
+                    DatabaseHandler db = new DatabaseHandler(context);
+
+                    //updateItems
+                    newItem.setItemName(babyItem.getText().toString());
+                    newItem.setItemColor(itemColor.getText().toString());
+                    newItem.setItemQuantity(Integer.parseInt(itemQuantity.getText().toString()));
+                    newItem.setItemSize(Integer.parseInt(itemSize.getText().toString()));
+
+                    if(!babyItem.getText().toString().isEmpty()
+                    && !itemColor.getText().toString().isEmpty()
+                    && !itemQuantity.getText().toString().isEmpty()
+                    && !itemSize.getText().toString().isEmpty()){
+                        db.updateItem(newItem);
+                        notifyItemChanged(getAdapterPosition(), newItem);
+                    } else {
+                        Snackbar.make(view, "Fields Empty", Snackbar.LENGTH_SHORT).show();
+                    }
+
+                    dialog.dismiss();
+
+
+                }
+            });
+        }
+
+        private void deleteItem(final int id) {
+
+            builder = new AlertDialog.Builder(context);
+            inflater = LayoutInflater.from(context);
+            View view = inflater.inflate(R.layout.confirmation_pop, null);
+
+            Button yesButton = view.findViewById(R.id.conf_yes_button);
+            Button noButton = view.findViewById(R.id.conf_no_button);
+
+            builder.setView(view);
+            dialog = builder.create();
+            dialog.show();
+
+            yesButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DatabaseHandler db = new DatabaseHandler(context);
+                    db.deleteItem(id);
+                    itemList.remove(getAdapterPosition());
+                    notifyItemRemoved(getAdapterPosition());
+                }
+            });
+
+            noButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
+
+
+        }
+
+
     }
 }

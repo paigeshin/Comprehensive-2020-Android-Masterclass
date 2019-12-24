@@ -42,6 +42,7 @@ public class AppActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         db = new DatabaseHandler(AppActivity.this);
+        byPassActivity();
 
         //check if item was saved
         List<Item> items = db.getAllItems();
@@ -76,6 +77,13 @@ public class AppActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void byPassActivity(){
+        if(db.getItemCount() > 0){
+            startActivity(new Intent(AppActivity.this, ListActivity.class));
+            finish();
+        }
     }
 
     private void saveItem(View view){
