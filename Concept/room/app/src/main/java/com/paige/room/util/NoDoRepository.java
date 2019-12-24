@@ -7,7 +7,7 @@ import androidx.lifecycle.LiveData;
 
 import com.paige.room.data.NoDoDao;
 import com.paige.room.model.NoDo;
-import com.paige.room.model.NoDoRoomDatabase;
+import com.paige.room.data.NoDoRoomDatabase;
 
 import java.util.List;
 
@@ -23,12 +23,12 @@ public class NoDoRepository {
         allNoDos = noDoDao.getAllNoDos();
     }
 
-    LiveData<List<NoDo>> getAllNoDos(){
+    public LiveData<List<NoDo>> getAllNoDos(){
         return allNoDos;
     }
 
     //Async Task
-    void insert(NoDo noDo){
+    public void insert(NoDo noDo){
         new insertAsyncTask(noDoDao).execute(noDo);
     }
 
