@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:background="@color/colorAccent"
+        android:text="아이템"
+        android:id="@+id/tvName_from_shoppingList_itemView"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:background="@android:color/black"
+        android:textColor="@android:color/white"
+        android:id="@+id/tvPrice_from_shoppingList_itemView"
+        android:gravity="center_horizontal"
+        android:text="가격: 1540원"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
