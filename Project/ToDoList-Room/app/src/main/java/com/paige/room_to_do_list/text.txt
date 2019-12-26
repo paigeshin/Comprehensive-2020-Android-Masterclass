@@ -1,0 +1,5 @@
+1. Entity 작성
+2. Dao 작성
+3. Database 작성
+4. Repository 작성
+5. ViewModel 작성

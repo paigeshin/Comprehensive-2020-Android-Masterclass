@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Room-To-Do-List</string>
+    <string name="No_Value">No Value</string>
+    <string name="finish">finish</string>
+    <string name="any_text">any text</string>
+    <string name="update">update</string>
+    <string name="insert">insert</string>
+</resources>
